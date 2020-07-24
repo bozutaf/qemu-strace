@@ -86,15 +86,28 @@
 { TARGET_NR_clock_getres, "clock_getres" , NULL, print_clock_getres,
                           print_syscall_ret_clock_getres },
 #endif
+#ifdef TARGET_NR_clock_getres_time64
+{ TARGET_NR_clock_getres_time64, "clock_getres64" , NULL,
+  print_clock_getres_time64, print_syscall_ret_clock_getres_time64 },
+#endif
 #ifdef TARGET_NR_clock_gettime
-{ TARGET_NR_clock_gettime, "clock_gettime" , NULL, print_clock_gettime,
+{ TARGET_NR_clock_gettime, "clock_gettime64" , NULL, print_clock_gettime,
                            print_syscall_ret_clock_gettime },
+#endif
+#ifdef TARGET_NR_clock_gettime64
+{ TARGET_NR_clock_gettime64, "clock_gettime64" , NULL, print_clock_gettime64,
+                           print_syscall_ret_clock_gettime64 },
 #endif
 #ifdef TARGET_NR_clock_nanosleep
 { TARGET_NR_clock_nanosleep, "clock_nanosleep" , NULL, NULL, NULL },
 #endif
 #ifdef TARGET_NR_clock_settime
-{ TARGET_NR_clock_settime, "clock_settime" , NULL, print_clock_settime, NULL },
+{ TARGET_NR_clock_settime, "clock_settime" , NULL,
+                           print_clock_settime, NULL },
+#endif
+#ifdef TARGET_NR_clock_settime64
+{ TARGET_NR_clock_settime64, "clock_settime64" , NULL,
+                             print_clock_settime64, NULL },
 #endif
 #ifdef TARGET_NR_clone
 { TARGET_NR_clone, "clone" , NULL, print_clone, NULL },
