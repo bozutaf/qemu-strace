@@ -80,6 +80,7 @@ UNUSED static void print_raw_param(const char *, abi_long, int);
 UNUSED static void print_timeval(abi_ulong, int);
 UNUSED static void print_timespec(abi_ulong, int);
 UNUSED static void print_timespec64(abi_ulong, int);
+UNUSED static void print_timex(abi_ulong, int);
 UNUSED static void print_timezone(abi_ulong, int);
 UNUSED static void print_itimerval(abi_ulong, int);
 UNUSED static void print_number(abi_long, int);
@@ -819,6 +820,24 @@ print_syscall_ret_clock_gettime64(void *cpu_env, const struct syscallname *name,
         print_syscall_ret_clock_gettime64
 #endif
 
+#if defined(TARGET_NR_clock_nanosleep)
+static void
+print_syscall_ret_clock_nanosleep(void *cpu_env, const struct syscallname *name,
+                                  abi_long ret, abi_long arg0, abi_long arg1,
+                                  abi_long arg2, abi_long arg3, abi_long arg4,
+                                  abi_long arg5)
+{
+    if (!print_syscall_err(ret)) {
+        qemu_log(TARGET_ABI_FMT_ld, ret);
+        qemu_log(" (remain = ");
+        print_timespec(arg1, 1);
+        qemu_log(")");
+    }
+
+    qemu_log("\n");
+}
+#endif
+
 #ifdef TARGET_NR_gettimeofday
 static void
 print_syscall_ret_gettimeofday(void *cpu_env, const struct syscallname *name,
@@ -1252,6 +1271,11 @@ UNUSED static struct flags mlockall_flags[] = {
 #endif
     FLAG_END,
 };
+
+UNUSED static struct flags nanosleep_flags[] = {
+    FLAG_GENERIC(TIMER_ABSTIME),
+    FLAG_END,
+}
 
 /* IDs of the various system clocks */
 #define TARGET_CLOCK_REALTIME              0
@@ -2074,6 +2098,21 @@ print_clock_gettime(void *cpu_env, const struct syscallname *name,
 #define print_clock_getres         print_clock_gettime
 #define print_clock_gettime64      print_clock_gettime
 #define print_clock_getres_time64  print_clock_getres
+#endif
+
+#ifdef TARGET_NR_clock_nanosleep
+static void
+print_clock_nanosleep(void *cpu_env, const struct syscallname *name,
+                      abi_long arg0, abi_long arg1, abi_long arg2,
+                      abi_long arg3, abi_long arg4, abi_long arg5)
+{
+    print_syscall_prologue(name);
+    print_enums(clockids, arg0, 0);
+    print_flags(nanosleep_flags, arg1, 0);
+    print_timespec(arg2, 0);
+    print_pointer(arg3, 1);
+    print_syscall_epilogue(name);
+}
 #endif
 
 #ifdef TARGET_NR_clock_settime
